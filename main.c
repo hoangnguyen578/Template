@@ -31,6 +31,8 @@ void SYS_Init(void)
 
     /* Enable UART clock */
     CLK_EnableModuleClock(UART0_MODULE);
+		CLK_EnableModuleClock(GPB_MODULE);
+		CLK_EnableModuleClock(GPF_MODULE);
 
     /* Select UART clock source from HIRC */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
@@ -65,8 +67,26 @@ int main()
 
     /* Connect UART to PC, and open a terminal tool to receive following message */
     printf("Hello World\n");
-
-    /* Got no where to go, just loop forever */
+		
+		/* Configure PB.14 as input mode */
+    GPIO_SetMode(PB, BIT14, GPIO_MODE_INPUT);
+		/* Configure PF.3 as output mode */
+		PF3 = 0;
+    GPIO_SetMode(PF, BIT3, GPIO_MODE_OUTPUT);
+		
+		do
+		{
+			if(PB14==0)
+				{
+					PF3 = 1;
+					/* Delay 500000 us */
+					CLK_SysTickDelay(10000000);
+					PF3 = 0;
+					/* Delay 500000 us */
+					CLK_SysTickDelay(10000000);
+				}
+		/* Got no where to go, just loop forever */
+		}
     while (1);
 }
 
